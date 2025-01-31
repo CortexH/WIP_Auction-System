@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuctionsController {
 
     // create new auction - authentication required
-    @PostMapping
+    @PostMapping("/new")
     public ResponseEntity<?> createNewAuction(){
         return ResponseEntity.ok("A");
     }
 
     // list all auctions - authentication required
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<?> listAllAuctions(){
         return ResponseEntity.ok("A");
     }
