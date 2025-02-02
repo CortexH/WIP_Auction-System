@@ -1,5 +1,9 @@
 package com.demo.controller;
 
+import com.demo.dto.input.NewAuctionDTO;
+import com.demo.services.AuctionService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,10 +11,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auctions")
 public class AuctionsController {
 
+    @Autowired
+    private AuctionService auctionService;
+
     // create new auction - authentication required
     @PostMapping("/new")
-    public ResponseEntity<?> createNewAuction(){
-        return ResponseEntity.ok("A");
+    public ResponseEntity<?> createNewAuction(
+            HttpServletRequest request,
+            @RequestBody(required = true) NewAuctionDTO data
+            ){
+        return ResponseEntity.ok(auctionService.createNewAuction(data, request));
     }
 
     // list all auctions - authentication required

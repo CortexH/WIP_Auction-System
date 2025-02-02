@@ -38,9 +38,17 @@ public class AuthenticationController {
         return ResponseEntity.ok(userService.loginWithUser(data, response));
     }
 
-    // get any user by id (basically allow you to see someone account when you click in his profile.
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ){
+        return ResponseEntity.ok(userService.logoutUser(request, response));
+    }
+
+    // get any user by id. Basically allow you to see someone account when you click in his profile.
     // e.g: highest bid, total bids, total values bids, auctions wins, etc.
-    // maybe ill not add this endpoint
+    // maybe i'll not add this endpoint
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable(name = "id") String id){
 

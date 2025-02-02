@@ -1,16 +1,15 @@
 package com.demo.domain.tokenBlacklist;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-
 @Entity
 @Table(name = "Blacklists")
 public class TokenBlacklist {
@@ -20,7 +19,7 @@ public class TokenBlacklist {
     private Long id;
 
     private String token;
-
+    private LocalDateTime expire_time;
 }
 
 

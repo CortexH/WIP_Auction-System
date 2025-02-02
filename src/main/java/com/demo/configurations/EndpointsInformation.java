@@ -3,7 +3,11 @@ package com.demo.configurations;
 public class EndpointsInformation {
 
     public static final String[] NoAuthorizationRequiredEndpoints = {
-            "/user/login", "/user/register"
+            "/user/login", "/user/register", "/user/logout"
+    };
+
+    public static final String[] AnyAuthorizationNeeded = {
+            "/user/logout"
     };
 
     public static final String[] BuyerAuthorizationRequiredEndpoints = {
