@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public record GenericErrorDTO(
-        LocalDateTime timestamp,
+        String timestamp,
         Integer status,
         String error,
         String message

@@ -3,10 +3,7 @@ package com.demo.domain.auction;
 
 import com.demo.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +11,7 @@ import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -29,7 +27,10 @@ public class Auction {
     private BigDecimal starting_price;
     private BigDecimal current_price;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private AuctionStatus status;
+
     private LocalDateTime start_time;
     private LocalDateTime end_time;
 

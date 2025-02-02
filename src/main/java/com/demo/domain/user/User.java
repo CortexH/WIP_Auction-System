@@ -1,16 +1,14 @@
 package com.demo.domain.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -22,6 +20,7 @@ public class User {
     private UUID user_id;
 
     private String username;
+    @Column(unique = true)
     private String email;
     private String password;
 

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bids")
 public class BidController {
 
-    // create new bid
+    // bid in an auction
     @PostMapping
     public ResponseEntity<?> createBid(){
         return ResponseEntity.ok("A");
