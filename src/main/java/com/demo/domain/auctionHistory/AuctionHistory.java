@@ -24,9 +24,10 @@ public class AuctionHistory {
 
     @ManyToOne
     @JoinColumn(name = "auction_id", nullable = false)
-    private Auction auction_id;
+    private Auction auction;
 
-    private EventType event_type;
+    @Enumerated(EnumType.STRING)
+    private AuctionEventType event_type;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = true)

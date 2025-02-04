@@ -1,6 +1,6 @@
 package com.demo.domain.auctionHistory;
 
-public enum EventType {
+public enum AuctionEventType {
 
     CREATED,
     BID_GIVEN,

@@ -6,6 +6,7 @@ import com.demo.security.JwtUtils;
 import com.demo.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,10 @@ import java.util.Arrays;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     // register user
     @PostMapping("/register")

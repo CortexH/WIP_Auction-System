@@ -1,7 +1,9 @@
 package com.demo.repositories;
 
 import com.demo.domain.auction.Auction;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,5 +20,14 @@ public interface AuctionRepository extends JpaRepository<Auction, UUID> {
             "AND a.status != 'CANCELED'"
     )
     List<Auction> findAllByLessDateTimeThanParam(@Param(value = "dateTime")LocalDateTime dateTime);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value =
+            "UPDATE auctions a " +
+            "SET a.status = 'CLOSED' " +
+            "WHERE a.auction_id IN :ids"
+    )
+    void closeAuctionsByUUIDList(@Param(value = "ids") List<UUID> ids);
 
 }

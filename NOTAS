@@ -1,0 +1,3 @@
+TERMINAR AUCTION AUTOMATIC END:
+    - precisa adicionar dinheiro à todos os auctioneers do processo
+    - precisa terminar as funções do AuctionHistoryService - getAllHistoriesOfAuctions

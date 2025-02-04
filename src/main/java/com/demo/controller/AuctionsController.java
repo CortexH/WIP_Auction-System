@@ -3,16 +3,17 @@ package com.demo.controller;
 import com.demo.dto.input.NewAuctionDTO;
 import com.demo.services.AuctionService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auctions")
+@RequiredArgsConstructor
 public class AuctionsController {
 
-    @Autowired
-    private AuctionService auctionService;
+    private final AuctionService auctionService;
 
     // create new auction - authentication required
     @PostMapping("/new")

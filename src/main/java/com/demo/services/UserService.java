@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -42,6 +43,7 @@ public class UserService {
                 .password(data.password())
                 .username(data.username())
                 .roles(UserRoles.AUCTIONEER)
+                .purse(new BigDecimal(15000))
                 .build();
 
         User saved_user = userRepository.save(user);

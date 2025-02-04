@@ -3,6 +3,7 @@ package com.demo.domain.user;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,11 +21,15 @@ public class User {
     private UUID user_id;
 
     private String username;
+
     @Column(unique = true)
     private String email;
+
     private String password;
 
     private UserRoles roles;
 
     private LocalDateTime creation_date;
+
+    private BigDecimal purse;
 }
