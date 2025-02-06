@@ -1,10 +1,8 @@
-package com.demo.security;
+package com.demo.utils;
 
 import com.demo.exceptions.NotAuthorizedException;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
-
-import java.nio.file.AccessDeniedException;
 
 @Slf4j
 public class CookieUtils {

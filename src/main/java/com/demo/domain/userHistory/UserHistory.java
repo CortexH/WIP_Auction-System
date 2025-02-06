@@ -30,7 +30,7 @@ public class UserHistory {
     @JoinColumn(name = "auction_id", nullable = true)
     private Auction auction;
 
-    private BigDecimal amout;
+    private BigDecimal amount;
     private String message;
     private LocalDateTime timeStamp;
 

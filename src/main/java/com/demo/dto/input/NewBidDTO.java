@@ -5,6 +5,6 @@ import java.util.UUID;
 
 public record NewBidDTO(
     UUID auction_id,
-    BigDecimal amout
+    BigDecimal amount
 ) {
 }

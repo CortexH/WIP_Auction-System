@@ -6,7 +6,6 @@ import com.demo.dto.internal.NewAuctionHistoryDTO;
 import com.demo.dto.output.FindBidsDTO;
 import com.demo.repositories.AuctionHistoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,7 +24,7 @@ public class AuctionHistoryService {
         try{
             AuctionHistory history = AuctionHistory.builder()
                     .auction(data.auction())
-                    .amout(data.amout())
+                    .amount(data.amount())
                     .event_type(data.auctionEventType())
                     .user_id(data.user())
                     .timeStamp(LocalDateTime.now())
@@ -46,7 +45,7 @@ public class AuctionHistoryService {
             for(NewAuctionHistoryDTO hist : data){
                 AuctionHistory history = AuctionHistory.builder()
                         .auction(hist.auction())
-                        .amout(hist.amout())
+                        .amount(hist.amount())
                         .event_type(hist.auctionEventType())
                         .user_id(hist.user())
                         .timeStamp(LocalDateTime.now())

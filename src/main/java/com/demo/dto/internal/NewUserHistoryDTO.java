@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public record NewUserHistoryDTO(
         User user,
         Auction auction,
-        BigDecimal amout,
+        BigDecimal amount,
         UserEventType userEventType,
         String message
 

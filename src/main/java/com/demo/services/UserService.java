@@ -6,32 +6,29 @@ import com.demo.dto.input.LoginUserDTO;
 import com.demo.dto.input.NewUserDTO;
 import com.demo.dto.output.GenericSuccessDTO;
 import com.demo.exceptions.ConflictException;
-import com.demo.exceptions.NotAuthorizedException;
 import com.demo.repositories.UserRepository;
-import com.demo.security.CookieUtils;
+import com.demo.utils.CookieUtils;
 import com.demo.security.JwtUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
-    private TokenBlacklistService tokenBlacklistService;
+    private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;
+    private final TokenBlacklistService tokenBlacklistService;
 
     public GenericSuccessDTO registerNewUser(NewUserDTO data, HttpServletResponse response){
 
@@ -42,7 +39,7 @@ public class UserService {
                 .email(data.email())
                 .password(data.password())
                 .username(data.username())
-                .roles(UserRoles.AUCTIONEER)
+                .roles(UserRoles.ADMIN)
                 .purse(new BigDecimal(15000))
                 .build();
 
@@ -69,7 +66,6 @@ public class UserService {
     }
 
     public GenericSuccessDTO logoutUser(HttpServletRequest request, HttpServletResponse response){
-
             Cookie cookie = CookieUtils.getCookieFromArray(request.getCookies());
             String token = cookie.getValue();
 
@@ -79,7 +75,6 @@ public class UserService {
             cookie.setMaxAge(0);
 
             response.addCookie(cookie);
-
 
         return new GenericSuccessDTO(LocalDateTime.now(), 200, "Successfully unlogged user");
 
@@ -91,6 +86,15 @@ public class UserService {
 
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
+    }
+
+    public User findUserByHttpServletRequest(HttpServletRequest request){
+        Cookie cookie = CookieUtils.getCookieFromArray(request.getCookies());
+
+        String token = cookie.getValue();
+
+        return getUserByToken(token);
+
     }
 
 

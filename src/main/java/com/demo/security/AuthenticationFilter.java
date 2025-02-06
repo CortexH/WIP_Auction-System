@@ -6,6 +6,7 @@ import com.demo.dto.output.GenericErrorDTO;
 import com.demo.exceptions.NotAuthorizedException;
 import com.demo.services.TokenBlacklistService;
 import com.demo.services.UserService;
+import com.demo.utils.CookieUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,10 +23,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Component

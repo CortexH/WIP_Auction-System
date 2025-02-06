@@ -25,5 +25,4 @@ public class SchedulesHandler {
     public void beginAutomaticEndAuction(){
         auctionAutomaticEnd.beginProcess();
     }
-
 }

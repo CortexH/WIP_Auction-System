@@ -31,7 +31,7 @@ public class Bid {
     @JoinColumn(name = "user_id")
     private User user_id;
 
-    private BigDecimal amout;
+    private BigDecimal amount;
 
     private LocalDateTime timeStamp;
 

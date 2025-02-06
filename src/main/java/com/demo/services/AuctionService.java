@@ -4,14 +4,20 @@ import com.demo.domain.auction.Auction;
 import com.demo.domain.auction.AuctionStatus;
 import com.demo.domain.auctionHistory.AuctionEventType;
 import com.demo.domain.user.User;
+import com.demo.domain.user.UserRoles;
 import com.demo.dto.input.NewAuctionDTO;
 import com.demo.dto.internal.NewAuctionHistoryDTO;
+import com.demo.dto.output.AuctionCreatedDTO;
+import com.demo.dto.output.FindAuctionDTO;
 import com.demo.dto.output.GenericSuccessDTO;
 import com.demo.repositories.AuctionRepository;
-import com.demo.security.CookieUtils;
+import com.demo.utils.CookieUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,19 +26,16 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class AuctionService {
 
-    @Autowired
-    private AuctionRepository auctionRepository;
+    private final AuctionRepository auctionRepository;
+    private final AuctionHistoryService historyService;
+    private final UserService userService;
 
-    @Autowired
-    private AuctionHistoryService historyService;
-
-    @Autowired
-    private UserService userService;
-
-    public GenericSuccessDTO createNewAuction(NewAuctionDTO data, HttpServletRequest request){
+    public AuctionCreatedDTO createNewAuction(NewAuctionDTO data, HttpServletRequest request){
             Cookie cookie = CookieUtils.getCookieFromArray(request.getCookies());
             User user = userService.getUserByToken(cookie.getValue());
 
@@ -48,14 +51,13 @@ public class AuctionService {
                     .winner_id(null)
                     .build();
 
+            Auction saved_auc = auctionRepository.save(auction);
 
-            auctionRepository.save(auction);
-
-            NewAuctionHistoryDTO historyDTO = new NewAuctionHistoryDTO(auction, null, AuctionEventType.CREATED, null, "Created new auction");
+            NewAuctionHistoryDTO historyDTO = new NewAuctionHistoryDTO(LocalDateTime.now(), auction, null, AuctionEventType.CREATED, null, "Created new auction");
 
             historyService.createNewHistoryByDataOrListOfData(historyDTO);
 
-            return new GenericSuccessDTO(LocalDateTime.now(), 200, "Auction created");
+            return new AuctionCreatedDTO(LocalDateTime.now(), 200, "Auction created", saved_auc.getAuction_id());
 
     }
 
@@ -74,11 +76,13 @@ public class AuctionService {
             throw new RuntimeException(e);
         }
     }
+
     public void closeAuctionsByListOfUUIDOrSingleUUID(UUID id){
         try{
             List<UUID> list = new ArrayList<>();
             list.add(id);
             auctionRepository.closeAuctionsByUUIDList(list);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -92,6 +96,52 @@ public class AuctionService {
     public List<Auction> getAllByIdsList(List<UUID> ids){
         return auctionRepository.findAllById(ids);
     }
+
+    public List<FindAuctionDTO> findAllFromUser(HttpServletRequest request) {
+        User user = userService.findUserByHttpServletRequest(request);
+
+        List<Auction> allAuctions = auctionRepository.findAuctionByUserNativeQuery(user.getUser_id());
+
+        List<FindAuctionDTO> filteredAucs = new ArrayList<>();
+
+        for (Auction auc : allAuctions) {
+            filteredAucs.add(new FindAuctionDTO(
+                    auc.getTitle(),
+                    auc.getCurrent_price(),
+                    auc.getStatus(),
+                    user.getUsername()
+            ));
+        }
+        return filteredAucs;
+
+    }
+
+    public GenericSuccessDTO manuallyCancelAuction(HttpServletRequest request, UUID id){
+        User user = userService.findUserByHttpServletRequest(request);
+        Auction auc = findAuctionById(id);
+
+        log.info(user.getEmail());
+
+        if(
+                user.getRoles() == UserRoles.ADMIN ||
+                (user.getEmail().equals(auc.getOwner_id().getEmail()))
+        ){
+
+            auctionRepository.manuallyCancelAuction(id);
+
+            historyService.createNewHistoryByDataOrListOfData(new NewAuctionHistoryDTO(
+                    LocalDateTime.now(), auc, null, AuctionEventType.CANCELED,
+                    null, "Auction canceled."
+            ));
+
+            return new GenericSuccessDTO(
+                    LocalDateTime.now(), 200, ("Auction '" + auc.getTitle() + "' successfully canceled")
+            );
+
+        }
+        throw new NoSuchElementException("Auction with specified id not found");
+    }
+
 
 }
 

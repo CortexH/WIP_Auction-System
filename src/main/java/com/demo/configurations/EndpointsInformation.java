@@ -16,7 +16,7 @@ public class EndpointsInformation {
 
     public static final String[] AuctioneerAuthorizationRequiredEndpoints = {
             "/bids/*", "/auctions/new", "/auctions/*/close",
-            "/auctions/*"
+            "/auctions/cancel/*"
     };
 
     public static final String[] OnlyForAdminEndpoints = {

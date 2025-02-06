@@ -32,6 +32,7 @@ public class AuctionAutomaticEnd {
             if(auctions.isEmpty()){
                 log.info("COULD NOT FOUND ANY CLOSEABLE AUCTION");
                 endProcess(0);
+                return;
             }
 
             List<UUID> ids = auctions.stream().map(Auction::getAuction_id).toList();
@@ -41,7 +42,7 @@ public class AuctionAutomaticEnd {
 
             for(Auction auc : auctions){
                 NewAuctionHistoryDTO data = new NewAuctionHistoryDTO(
-                            auc, auc.getCurrent_price(), AuctionEventType.FINISHED,
+                            LocalDateTime.now(), auc, auc.getCurrent_price(), AuctionEventType.FINISHED,
                             auc.getWinner_id(), "Auction finished by time."
                         );
                 allHistory.add(data);
