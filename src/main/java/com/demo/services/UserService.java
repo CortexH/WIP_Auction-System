@@ -66,17 +66,19 @@ public class UserService {
     }
 
     public GenericSuccessDTO logoutUser(HttpServletRequest request, HttpServletResponse response){
-            Cookie cookie = CookieUtils.getCookieFromArray(request.getCookies());
-            String token = cookie.getValue();
 
-            tokenBlacklistService.blacklistToken(token);
+        Cookie cookie = CookieUtils.getCookieFromArray(request.getCookies());
+        String token = cookie.getValue();
+        if(token.isBlank()) throw new ConflictException("Token is null");
+        if(tokenBlacklistService.validateIfTokenIsNotBlacklisted(token)) throw new ConflictException("token is already blacklisted");
 
-            cookie.setValue(null);
-            cookie.setMaxAge(0);
+        tokenBlacklistService.blacklistToken(token);
 
-            response.addCookie(cookie);
+        Cookie resp_cookie = CookieUtils.createNewCookie("AUTHORIZATION", null, 1);
 
-        return new GenericSuccessDTO(LocalDateTime.now(), 200, "Successfully unlogged user");
+        response.addCookie(resp_cookie);
+
+        return new GenericSuccessDTO(LocalDateTime.now(), 200, "Successfully logged out user");
 
     }
 
@@ -90,11 +92,8 @@ public class UserService {
 
     public User findUserByHttpServletRequest(HttpServletRequest request){
         Cookie cookie = CookieUtils.getCookieFromArray(request.getCookies());
-
         String token = cookie.getValue();
-
         return getUserByToken(token);
-
     }
 
 

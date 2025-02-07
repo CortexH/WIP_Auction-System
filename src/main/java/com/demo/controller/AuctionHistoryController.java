@@ -27,7 +27,7 @@ public class AuctionHistoryController {
     // return a list of bidders in any auction
     @GetMapping("/auctions/{id}/bidders")
     public ResponseEntity<?> getAllAuctionBidders(@PathVariable(name = "id") String id){
-        return ResponseEntity.ok("a");
+        return ResponseEntity.ok("A");
     }
 }
 

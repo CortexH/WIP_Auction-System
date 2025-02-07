@@ -4,6 +4,7 @@ import com.demo.domain.auction.Auction;
 import com.demo.domain.auctionHistory.AuctionHistory;
 import com.demo.dto.internal.NewAuctionHistoryDTO;
 import com.demo.dto.output.FindBidsDTO;
+import com.demo.dto.output.FindSingleAuctionHistoryDTO;
 import com.demo.repositories.AuctionHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

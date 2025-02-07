@@ -64,7 +64,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             filterChain.doFilter(request, response);
-        } catch (NotAuthorizedException e) {
+        } catch (NotAuthorizedException | NoSuchElementException e) {
 
             GenericErrorDTO data = new GenericErrorDTO(
                     LocalDateTime.now().toString(),
@@ -72,18 +72,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                     "Not authorized"
                     );
-
-            response.setStatus(401);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(data));
-            response.setContentType("application/json");
-            response.getWriter().flush();
-        } catch (NoSuchElementException e) {
-            GenericErrorDTO data = new GenericErrorDTO(
-                    LocalDateTime.now().toString(),
-                    401,
-                    HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                    "Incorrect password or email"
-            );
 
             response.setStatus(401);
             response.getWriter().write(new ObjectMapper().writeValueAsString(data));

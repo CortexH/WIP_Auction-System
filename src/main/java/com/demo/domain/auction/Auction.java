@@ -44,4 +44,6 @@ public class Auction {
 
     private LocalDateTime creation_date;
 
+    @Enumerated(EnumType.STRING)
+    private AuctionVisibility visibility;
 }

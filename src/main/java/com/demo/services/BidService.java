@@ -30,10 +30,7 @@ public class BidService {
     private final AuctionHistoryService auctionHistoryService;
 
     public GenericSuccessDTO bidAuction(HttpServletRequest request, NewBidDTO data){
-        Cookie cookie = CookieUtils.getCookieFromArray(request.getCookies());
-        String token = cookie.getValue();
-
-        User user = userService.getUserByToken(token);
+        User user = userService.findUserByHttpServletRequest(request);
         Auction auction = auctionService.findAuctionById(data.auction_id());
 
         if(user.getPurse().compareTo(data.amount()) < 0) throw new ConflictException("Not enough cash in purse to realize this action!");

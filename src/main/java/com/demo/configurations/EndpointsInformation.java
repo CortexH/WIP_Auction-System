@@ -11,12 +11,13 @@ public class EndpointsInformation {
     };
 
     public static final String[] BuyerAuthorizationRequiredEndpoints = {
-            "/bids", "/bids/users/*"
+            "/bids", "/bids/users/*", ""
     };
 
     public static final String[] AuctioneerAuthorizationRequiredEndpoints = {
             "/bids/*", "/auctions/new", "/auctions/*/close",
-            "/auctions/cancel/*"
+            "/auctions/cancel/*", "/auctions/find", "/auctions/allowlist/add",
+            "/auctions/allowlist/remove"
     };
 
     public static final String[] OnlyForAdminEndpoints = {

@@ -3,6 +3,7 @@ package com.demo.controller;
 import com.demo.dto.input.NewAuctionDTO;
 import com.demo.services.AuctionService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +31,20 @@ public class AuctionsController {
     public ResponseEntity<?> listAllAuctions(
             HttpServletRequest request
     ){
-        return ResponseEntity.ok(auctionService.findAllFromUser(request));
+        return ResponseEntity.ok(auctionService.findAllAuctionsFromUser(request));
     }
 
     // get auction by id - authentication required
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getAuctionById(@PathVariable(name = "id") String id){
-        return ResponseEntity.ok("A");
+    @GetMapping("/find")
+    public ResponseEntity<?> getAuctionById(
+            @PathParam(value = "id") UUID id,
+            @PathParam(value = "history") Boolean history,
+            HttpServletRequest request
+    ){
+        if(!history){
+            return ResponseEntity.ok(auctionService.findAuction_OrAuctionAndHistory(request, id));
+        }
+        return ResponseEntity.ok(auctionService.findAuction_OrAuctionAndHistory(request, id, true));
     }
 
     // manually close auction - authentication required, only by creator user / admin role required

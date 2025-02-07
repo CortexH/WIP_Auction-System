@@ -2,29 +2,25 @@ package com.demo.services;
 
 import com.demo.domain.auction.Auction;
 import com.demo.domain.auction.AuctionStatus;
+import com.demo.domain.auction.AuctionVisibility;
 import com.demo.domain.auctionHistory.AuctionEventType;
 import com.demo.domain.user.User;
 import com.demo.domain.user.UserRoles;
 import com.demo.dto.input.NewAuctionDTO;
 import com.demo.dto.internal.NewAuctionHistoryDTO;
+import com.demo.dto.output.AuctionAndHistoryDTO;
 import com.demo.dto.output.AuctionCreatedDTO;
 import com.demo.dto.output.FindAuctionDTO;
 import com.demo.dto.output.GenericSuccessDTO;
 import com.demo.repositories.AuctionRepository;
-import com.demo.utils.CookieUtils;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,28 +32,29 @@ public class AuctionService {
     private final UserService userService;
 
     public AuctionCreatedDTO createNewAuction(NewAuctionDTO data, HttpServletRequest request){
-            Cookie cookie = CookieUtils.getCookieFromArray(request.getCookies());
-            User user = userService.getUserByToken(cookie.getValue());
 
-            Auction auction = Auction.builder()
-                    .creation_date(LocalDateTime.now())
-                    .description(data.description())
-                    .title(data.title())
-                    .start_time(data.start_time())
-                    .end_time(data.start_time().plusHours(3))
-                    .status(AuctionStatus.SCHEDULED)
-                    .starting_price(data.starting_price())
-                    .owner_id(user)
-                    .winner_id(null)
-                    .build();
+        User user = userService.findUserByHttpServletRequest(request);
 
-            Auction saved_auc = auctionRepository.save(auction);
+        Auction auction = Auction.builder()
+                .creation_date(LocalDateTime.now())
+                .description(data.description())
+                .title(data.title())
+                .start_time(data.start_time())
+                .end_time(data.start_time().plusHours(3))
+                .status(AuctionStatus.SCHEDULED)
+                .starting_price(data.starting_price())
+                .owner_id(user)
+                .winner_id(null)
+                .visibility(data.visibility())
+                .build();
 
-            NewAuctionHistoryDTO historyDTO = new NewAuctionHistoryDTO(LocalDateTime.now(), auction, null, AuctionEventType.CREATED, null, "Created new auction");
+        Auction saved_auc = auctionRepository.save(auction);
 
-            historyService.createNewHistoryByDataOrListOfData(historyDTO);
+        NewAuctionHistoryDTO historyDTO = new NewAuctionHistoryDTO(LocalDateTime.now(), auction, null, AuctionEventType.CREATED, null, "Created new auction");
 
-            return new AuctionCreatedDTO(LocalDateTime.now(), 200, "Auction created", saved_auc.getAuction_id());
+        historyService.createNewHistoryByDataOrListOfData(historyDTO);
+
+        return new AuctionCreatedDTO(LocalDateTime.now(), 200, "Auction created", saved_auc.getAuction_id());
 
     }
 
@@ -97,7 +94,7 @@ public class AuctionService {
         return auctionRepository.findAllById(ids);
     }
 
-    public List<FindAuctionDTO> findAllFromUser(HttpServletRequest request) {
+    public List<FindAuctionDTO> findAllAuctionsFromUser(HttpServletRequest request) {
         User user = userService.findUserByHttpServletRequest(request);
 
         List<Auction> allAuctions = auctionRepository.findAuctionByUserNativeQuery(user.getUser_id());
@@ -109,7 +106,8 @@ public class AuctionService {
                     auc.getTitle(),
                     auc.getCurrent_price(),
                     auc.getStatus(),
-                    user.getUsername()
+                    user.getUsername(),
+                    auc.getVisibility()
             ));
         }
         return filteredAucs;
@@ -142,6 +140,24 @@ public class AuctionService {
         throw new NoSuchElementException("Auction with specified id not found");
     }
 
+    public FindAuctionDTO findAuctionByIdAndFormatToDTO(HttpServletRequest request, UUID id){
+        Auction auc = findAuctionById(id);
+        User user = userService.findUserByHttpServletRequest(request);
+
+        if(!auc.getOwner_id().getEmail().equals(user.getEmail())) throw new NoSuchElementException("Auction with specified ID not found");
+
+
+
+        return null;
+    }
+
+    public FindAuctionDTO findAuction_OrAuctionAndHistory(HttpServletRequest request, UUID id){
+        return new FindAuctionDTO("A", new BigDecimal(1), AuctionStatus.SCHEDULED, "AAAA", AuctionVisibility.PUBLIC);
+    }
+
+    public AuctionAndHistoryDTO findAuction_OrAuctionAndHistory(HttpServletRequest request, UUID id, Boolean bool){
+        return null;
+    }
 
 }
 
